@@ -1,0 +1,55 @@
+<html>
+
+
+    <body>
+        
+        <ul id="placeholder">
+
+        </ul>
+
+        <form id="form" action="#">
+          <label for="input">Msg:</label><br>
+          <input type="text" id="input" name="input" value=""><br>
+
+          <input type="submit" value="Submit">
+        </form>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          const socket = io({
+            'reconnection': true,
+            'forceNew': true
+          });
+
+          
+
+          socket.on("connect", function() {
+            console.log(`connected.`)
+
+            socket.emit('join', "room1");
+
+            const messages = document.getElementById("placeholder")
+
+            socket.on('chat message', function(msg) {
+                var item = document.createElement('li');
+                item.textContent = msg;
+                messages.appendChild(item);
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+
+            const form = document.getElementById('form');
+            const input = document.getElementById('input');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (input.value) {
+                    socket.emit('room1', input.value);
+                    input.value = '';
+                }
+            });
+          });
+          
+        </script>
+    </body>
+</html>
